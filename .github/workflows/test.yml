@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+      - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
       - run: aube install
       - run: aubr all
   test: # make sure the action works on a clean machine without building
@@ -142,6 +142,54 @@ jobs:
           version: v2025.7.3 # should trim the `v`
           sha256: d38d4993c5379a680b50661f86287731dc1d1264777880a79b786403af337948
 
+  minimum_release_age:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install an age-filtered 2024 mise release
+        uses: ./
+        with:
+          cache: false
+          env: false
+          install: false
+          minimum_release_age: 2024-09-06
+          mise_dir: ${{ runner.temp }}/mise-age-2024
+      - name: Install the latest mise release
+        uses: ./
+        with:
+          cache: false
+          install: false
+          minimum_release_age: 0s
+      - name: Replace it with an age-filtered release
+        uses: ./
+        with:
+          cache: false
+          install: false
+          minimum_release_age: 7d
+      - name: Reject an invalid calendar date
+        id: invalid-calendar-date
+        uses: ./
+        continue-on-error: true
+        with:
+          cache: false
+          install: false
+          minimum_release_age: 2024-02-31
+      - name: Check invalid calendar date rejection
+        if: steps.invalid-calendar-date.outcome != 'failure'
+        run: exit 1
+      - name: Check the selected release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          cutoff=$(date -u -d '7 days ago' +%s)
+          expected=$(gh api 'repos/jdx/mise/releases?per_page=100' --jq \
+            "map(select(.draft == false and .prerelease == false and ((.published_at // .created_at) | fromdateiso8601) <= $cutoff)) | max_by(.published_at // .created_at).tag_name" | sed 's/^v//')
+          actual=$(mise version --json | jq -r '.version | split(" ")[0]')
+          test "$actual" = "$expected"
+
   checksum_failure:
     runs-on: ubuntu-latest
     steps:
@@ -210,6 +258,48 @@ jobs:
       - run: which jq
       - run: jq --version
 
+  download_retry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create flaky curl wrapper
+        shell: bash
+        run: |
+          real_curl="$(command -v curl)"
+          mock_bin="$RUNNER_TEMP/mock-bin"
+          mkdir -p "$mock_bin"
+          cat > "$mock_bin/curl" <<EOF
+          #!/usr/bin/env bash
+          set -euo pipefail
+          attempt=0
+          if [[ -f "\$MISE_ACTION_CURL_ATTEMPTS" ]]; then
+            read -r attempt < "\$MISE_ACTION_CURL_ATTEMPTS"
+          fi
+          attempt=\$((attempt + 1))
+          printf '%s\n' "\$attempt" > "\$MISE_ACTION_CURL_ATTEMPTS"
+          if (( attempt <= 2 )); then
+            echo "simulated transient curl failure" >&2
+            exit 60
+          fi
+          exec "$real_curl" "\$@"
+          EOF
+          chmod +x "$mock_bin/curl"
+          echo "$mock_bin" >> "$GITHUB_PATH"
+          echo "MISE_ACTION_CURL_ATTEMPTS=$RUNNER_TEMP/curl-attempts" >> "$GITHUB_ENV"
+      - name: Setup mise after transient download failures
+        uses: ./
+        with:
+          cache: false
+          install: false
+          mise_dir: ${{ runner.temp }}/mise-download-retry
+          version: 2025.7.3
+          sha256: d38d4993c5379a680b50661f86287731dc1d1264777880a79b786403af337948
+      - name: Check download attempts
+        shell: bash
+        run: test "$(cat "$MISE_ACTION_CURL_ATTEMPTS")" = 3
+
   final:
     needs:
       - build
@@ -217,6 +307,7 @@ jobs:
       - specific_version
       - checksum_failure
       - custom_cache_key
+      - download_retry
       - fetch_from_github
     runs-on: ubuntu-latest
     timeout-minutes: 1
