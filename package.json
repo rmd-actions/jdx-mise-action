@@ -1,7 +1,7 @@
 {
   "name": "mise-action",
   "description": "mise tool setup action",
-  "version": "4.3.0",
+  "version": "5.0.1",
   "author": "jdx",
   "type": "module",
   "private": true,
@@ -18,7 +18,9 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "all": "npm run format:write && npm run lint && npm run package",
+    "all": "npm run format:write && npm run lint && npm run test && npm run package",
+    "test": "node --test scripts/*.test.mjs",
+    "typecheck": "node ./node_modules/@typescript/native/bin/tsc --noEmit",
     "bundle": "npm run format:write && npm run package",
     "format:check": "prettier --check **/*.ts",
     "format:write": "prettier --write **/*.ts",
@@ -35,7 +37,6 @@
     "@actions/exec": "^3.0.0",
     "@actions/glob": "^0.7.0",
     "@actions/io": "^3.0.0",
-    "@types/handlebars": "^4.0.40",
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "@rollup/plugin-typescript": "^12.0.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^24",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.0.0",
     "globals": "^17.0.0",
     "husky": "^9.1.7",
