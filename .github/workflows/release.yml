@@ -5,10 +5,20 @@ on:
     types: [closed]
     branches: [main]
 
+# Every closed PR starts this workflow, so only release PRs share a group; any other
+# closed PR gets a group of its own and cannot displace a pending release. Every
+# release must run (each tags its own version), so queue them instead of keeping only
+# the newest pending one, and never cancel one that is publishing.
+concurrency:
+  group: ${{ github.workflow }}-${{ contains(github.event.pull_request.labels.*.name, 'release') && 'release' || github.run_id }}
+  cancel-in-progress: false
+  queue: max
+
 permissions: {}
 
 jobs:
   release:
+    timeout-minutes: 60
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     permissions:
@@ -22,7 +32,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup mise
-        uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
+        uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
 
       - name: Release
         run: ./scripts/postversion.sh
@@ -30,6 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   enhance-release:
+    timeout-minutes: 30
     needs: [release]
     runs-on: ubuntu-latest
     permissions:
@@ -39,7 +50,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
+      - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
       - name: Enhance release notes with communique
         run: |
           TAG_NAME="v$(jq -r .version package.json)"
