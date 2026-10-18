@@ -1,7 +1,125 @@
 # Changelog
 
 ---
-## [4.3.0](https://github.com/jdx/mise-action/compare/v4.2.5..v4.3.0) - 2026-08-24
+## [5.2.0](https://github.com/jdx/mise-action/compare/v5.1.2..v5.2.0) - 2026-10-16
+
+### 🚀 Features
+
+- **(cache)** rebuild the cache every 30 days by default (#689) by [@jdx](https://github.com/jdx) in [#689](https://github.com/jdx/mise-action/pull/689)
+- **(cache)** retry throttled cache restores and saves (#692) by [@jdx](https://github.com/jdx) in [#692](https://github.com/jdx/mise-action/pull/692)
+- verify the mise binary against its signed packslip (#693) by [@jdx](https://github.com/jdx) in [#693](https://github.com/jdx/mise-action/pull/693)
+
+### 🐛 Bug Fixes
+
+- export the PATH entries mise reports with mise env --paths (#685) by [@jdx](https://github.com/jdx) in [#685](https://github.com/jdx/mise-action/pull/685)
+
+### 🔍 Other Changes
+
+- Use monorepo install when configured (#679) by [@zeitlinger](https://github.com/zeitlinger) in [#679](https://github.com/jdx/mise-action/pull/679)
+- Change minimum age for auto-merging release PRs by [@jdx](https://github.com/jdx) in [b511e8d](https://github.com/jdx/mise-action/commit/b511e8dec14aeeaeeac996371d336fcc5d0a6bed)
+
+### 📚 Documentation
+
+- tell release workflows not to use the cache (#682) by [@jdx](https://github.com/jdx) in [#682](https://github.com/jdx/mise-action/pull/682)
+- explain caching mise downloads instead of installs (#686) by [@zeitlinger](https://github.com/zeitlinger) in [#686](https://github.com/jdx/mise-action/pull/686)
+- use resolved Windows downloads cache path (#690) by [@zeitlinger](https://github.com/zeitlinger) in [#690](https://github.com/jdx/mise-action/pull/690)
+
+### ⚙️ Miscellaneous Tasks
+
+- stop restoring caches in release jobs (#683) by [@jdx](https://github.com/jdx) in [#683](https://github.com/jdx/mise-action/pull/683)
+- replace prettier with oxfmt (#694) by [@jdx](https://github.com/jdx) in [#694](https://github.com/jdx/mise-action/pull/694)
+
+---
+## [5.1.2](https://github.com/jdx/mise-action/compare/v5.1.1..v5.1.2) - 2026-10-12
+
+### 🐛 Bug Fixes
+
+- continue with the existing mise when auto-update cannot replace it (#665) by [@jdx](https://github.com/jdx) in [#665](https://github.com/jdx/mise-action/pull/665)
+- export mise_dir as MISE_DATA_DIR so mise installs tools there (#672) by [@jdx](https://github.com/jdx) in [#672](https://github.com/jdx/mise-action/pull/672)
+
+### 📚 Documentation
+
+- explain MISE_ENABLE_TOOLS in GitHub Actions (#667) by [@zeitlinger](https://github.com/zeitlinger) in [#667](https://github.com/jdx/mise-action/pull/667)
+- update the Rust cache section for mise 2026.9.2 (#670) by [@jdx](https://github.com/jdx) in [#670](https://github.com/jdx/mise-action/pull/670)
+
+### ⚙️ Miscellaneous Tasks
+
+- **(ci)** update pr-closer to v1.3.0 by [@jdx](https://github.com/jdx) in [076ebfb](https://github.com/jdx/mise-action/commit/076ebfb79b60ee1ddabb50019a55a03b1dbd1ec9)
+- **(ci)** lint workflows with jactionlint (#673) by [@jdx](https://github.com/jdx) in [#673](https://github.com/jdx/mise-action/pull/673)
+- **(ci)** switch to jactionlint v2 and drop zizmor (#674) by [@jdx](https://github.com/jdx) in [#674](https://github.com/jdx/mise-action/pull/674)
+- update pr-closer policy by [@jdx](https://github.com/jdx) in [88f13e0](https://github.com/jdx/mise-action/commit/88f13e0475d8b553967dd3816a34b6dcd3344c35)
+- fix the upload-artifact version comment (#671) by [@jdx](https://github.com/jdx) in [#671](https://github.com/jdx/mise-action/pull/671)
+
+---
+## [5.1.1](https://github.com/jdx/mise-action/compare/v5.1.0..v5.1.1) - 2026-10-04
+
+### 🐛 Bug Fixes
+
+- make GitHub token persistence opt-in (#658) by [@jdx](https://github.com/jdx) in [#658](https://github.com/jdx/mise-action/pull/658)
+
+---
+## [5.1.0](https://github.com/jdx/mise-action/compare/v5.0.1..v5.1.0) - 2026-10-04
+
+### 🚀 Features
+
+- output active tool versions (#655) by [@jdx](https://github.com/jdx) in [#655](https://github.com/jdx/mise-action/pull/655)
+- add opt-in cache_save_post input (#649) by [@jdx](https://github.com/jdx) in [#649](https://github.com/jdx/mise-action/pull/649)
+- add plugins input (#656) by [@jdx](https://github.com/jdx) in [#656](https://github.com/jdx/mise-action/pull/656)
+
+### 🐛 Bug Fixes
+
+- **(cache)** keep a cached mise instead of re-downloading when version is unset (#642) by [@jdx](https://github.com/jdx) in [#642](https://github.com/jdx/mise-action/pull/642)
+- save cache after inexact cache restore (#646) by [@jdx](https://github.com/jdx) in [#646](https://github.com/jdx/mise-action/pull/646)
+- extract mise zip with PowerShell instead of unzip on Windows (#650) by [@jdx](https://github.com/jdx) in [#650](https://github.com/jdx/mise-action/pull/650)
+- cache mise binary for caches saved without a version record (#648) by [@jdx](https://github.com/jdx) in [#648](https://github.com/jdx/mise-action/pull/648)
+
+### 📚 Documentation
+
+- explain the Rust cache caveat and workarounds (#651) by [@jdx](https://github.com/jdx) in [#651](https://github.com/jdx/mise-action/pull/651)
+- add matrix and external cache guides; warn on shadowed mise_toml (#654) by [@jdx](https://github.com/jdx) in [#654](https://github.com/jdx/mise-action/pull/654)
+
+### ⚙️ Miscellaneous Tasks
+
+- add TypeScript 7 alongside TypeScript 6 (#639) by [@jdx](https://github.com/jdx) in [#639](https://github.com/jdx/mise-action/pull/639)
+- make the final job depend on every test job (#643) by [@jdx](https://github.com/jdx) in [#643](https://github.com/jdx/mise-action/pull/643)
+- roll every check up into the final job (#645) by [@jdx](https://github.com/jdx) in [#645](https://github.com/jdx/mise-action/pull/645)
+- remove unneeded @types/handlebars dependency (#647) by [@jdx](https://github.com/jdx) in [#647](https://github.com/jdx/mise-action/pull/647)
+
+---
+## [5.0.1](https://github.com/jdx/mise-action/compare/v5.0.0..v5.0.1) - 2026-09-30
+
+### 🐛 Bug Fixes
+
+- verify cached mise before execution (#637) by [@jdx](https://github.com/jdx) in [#637](https://github.com/jdx/mise-action/pull/637)
+
+---
+## [5.0.0](https://github.com/jdx/mise-action/compare/v4.3.0..v5.0.0) - 2026-09-28
+
+### 🚀 Features
+
+- **breaking** default minimum release age to 24 hours (#632) by [@jdx](https://github.com/jdx) in [279d505](https://github.com/jdx/mise-action/commit/279d5058bda2d067bb8ae4ee4662aced8e496382)
+
+### 🐛 Bug Fixes
+
+- fix: authenticate mise self-update to avoid GitHub API rate limits (#619) by [@hegde5](https://github.com/hegde5) in [#619](https://github.com/jdx/mise-action/pull/619)
+
+### ⚙️ Miscellaneous Tasks
+
+- **(entire)** store checkpoints in a private repository by [@jdx](https://github.com/jdx) in [15b2b0f](https://github.com/jdx/mise-action/commit/15b2b0f0ffa0e8844885e126bde40b70921eb370)
+- **(entire)** commit codex session hooks by [@jdx](https://github.com/jdx) in [b0eb15f](https://github.com/jdx/mise-action/commit/b0eb15f90170a6222c19c94844cc4eda232738cb)
+- **(entire)** commit claude session hooks by [@jdx](https://github.com/jdx) in [6ac0f83](https://github.com/jdx/mise-action/commit/6ac0f83023a6be3397e0b7e6882530dd095bcea5)
+- **(entire)** restore lower-cost trail findings by [@jdx](https://github.com/jdx) in [aa79241](https://github.com/jdx/mise-action/commit/aa792413b7229c1e010f817293d81eeb4a14581a)
+- remove entire and codex agent hooks by [@jdx](https://github.com/jdx) in [07f40cf](https://github.com/jdx/mise-action/commit/07f40cfcc0594453c27b9bdf0960aad84425b024)
+- add entire trail runners (#624) by [@jdx](https://github.com/jdx) in [#624](https://github.com/jdx/mise-action/pull/624)
+- remove Entire trail runners (#630) by [@jdx](https://github.com/jdx) in [#630](https://github.com/jdx/mise-action/pull/630)
+- float jdx tools and aube on latest without a release-age delay (#631) by [@jdx](https://github.com/jdx) in [#631](https://github.com/jdx/mise-action/pull/631)
+
+### New Contributors
+
+* @hegde5 made their first contribution in [#619](https://github.com/jdx/mise-action/pull/619)
+
+---
+## [4.3.0](https://github.com/jdx/mise-action/compare/v4.2.5..v4.3.0) - 2026-08-25
 
 ### 🚀 Features
 
