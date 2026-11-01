@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   pr-closer:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -18,4 +19,4 @@ jobs:
       checks: read
       statuses: read
     steps:
-      - uses: jdx/pr-closer@9e82f2808d88b029f0a980696725d7d6d62f3c6f # v1.2.0
+      - uses: jdx/pr-closer@cfa2025cb55ac202d3e329fc4cc412449de884e2 # v1.3.0
